@@ -12,14 +12,24 @@ $produits = json_decode($json, true);
 
 $idSelectionne = $_GET["id"] ?? "";
 $quantite = intval($_GET["panier"] ?? 1);
+$codePromo = $_GET["code-promo"] ?? ""; // Récupération du code promo
 $produitSelectionne = null;
+$reduction = 0;
 
-// Vérification si un produit est sélectionné
+// Si un produit est sélectionné donc si on vient de l'ajouter au panier
 if ($idSelectionne) {
     foreach ($produits as $produit) {
         if ($produit["id"] == $idSelectionne) {
             $produitSelectionne = $produit;
-            $produitSelectionne["quantite"] = $quantite; // Quantité ajoutée
+            $produitSelectionne["quantite"] = $quantite;
+
+            // Application du code promo si valide
+            if (strtolower($codePromo) == "iuto") {
+                $reduction = 0.10; // Réduction de 10%
+                $produitSelectionne["reduction"] = $reduction;
+            } else {
+                $produitSelectionne["reduction"] = 0; // Pas de réduction
+            }
 
             // Recherche si le produit est déjà dans le panier
             $produitTrouve = false;
@@ -27,6 +37,10 @@ if ($idSelectionne) {
                 if ($item["id"] == $produitSelectionne["id"]) {
                     // Si le produit existe déjà, on ajoute la quantité
                     $item["quantite"] += $quantite;
+                    // Si un code promo est appliqué, mettre à jour la réduction
+                    if ($reduction > 0) {
+                        $item["reduction"] = $reduction;
+                    }
                     $produitTrouve = true;
                     break;
                 }
@@ -48,51 +62,72 @@ if ($idSelectionne) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panier</title>
+    <title>Mon Panier</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="panier.css">
 </head>
 <body>
     <?php include("inc/templates/nav-bar.php"); ?>
-    <h1>Mon Panier</h1>
 
-    <h2>Total du panier : <?php echo htmlspecialchars(array_sum(array_map(function($item) { return $item["price"] * $item["quantite"]; }, $_SESSION["panier"]))); ?>€</h2>
-    
-    <!-- Produit récemment ajouté -->
-    <?php if ($produitSelectionne): ?>
-        <h2>Produit ajouté :</h2>
-        <div class="contenu">
-            <img src="img/<?php echo str_replace(" ", "", htmlspecialchars($produitSelectionne["title"])); ?>.png" alt="<?php echo htmlspecialchars($produitSelectionne["title"]); ?>">
-            <div>
-                <h3><?php echo htmlspecialchars($produitSelectionne["title"]); ?></h3>
-                <p>Prix : <?php echo htmlspecialchars($produitSelectionne["price"]); ?>€</p>
-                <p>Quantité : <?php echo htmlspecialchars($produitSelectionne["quantite"]); ?></p>
-                <p>Total : <?php echo htmlspecialchars($produitSelectionne["price"] * $produitSelectionne["quantite"]); ?>€</p>
-            </div>
-        </div>
-    <?php endif; ?>
+    <div class="container-panier">
+        <h1>Mon Panier</h1>
 
-    <!-- Tous les produits du panier -->
-    <h2>Produits dans le panier :</h2>
-    <?php if (!empty($_SESSION["panier"])): ?>
-        <?php foreach ($_SESSION["panier"] as $item): ?>
-            <div class="contenu">
-                <img src="img/<?php echo str_replace(" ", "", htmlspecialchars($item["title"])); ?>.png" alt="<?php echo htmlspecialchars($item["title"]); ?>">
-                <div>
-                    <h3><?php echo htmlspecialchars($item["title"]); ?></h3>
-                    <p>Prix : <?php echo htmlspecialchars($item["price"]); ?>€</p>
-                    <p>Quantité : <?php echo htmlspecialchars($item["quantite"]); ?></p>
-                    <p>Total : <?php echo htmlspecialchars($item["price"] * $item["quantite"]); ?>€</p>
+        <?php if (!empty($_SESSION["panier"])): ?>
+            <div class="panier-details">
+                <h2>Résumé de votre panier</h2>
+                <table class="table-panier">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Produit</th>
+                            <th>Prix unitaire</th>
+                            <th>Quantité</th>
+                            <th>Réduction</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($_SESSION["panier"] as $item): ?>
+                            <?php
+                            $prixUnitaire = $item["price"];
+                            $reduction = $item["reduction"] ?? 0;
+                            $prixAvecReduction = $prixUnitaire * (1 - $reduction);
+                            $total = $prixAvecReduction * $item["quantite"];
+                            ?>
+                            <tr>
+                                <td><img src="img/<?php echo str_replace(" ", "", htmlspecialchars($item["title"])); ?>.png" alt="<?php echo htmlspecialchars($item["title"]); ?>" class="img-panier"></td>
+                                <td><?php echo htmlspecialchars($item["title"]); ?></td>
+                                <td><?php echo number_format($prixUnitaire, 2); ?>€</td>
+                                <td><?php echo htmlspecialchars($item["quantite"]); ?></td>
+                                <td><?php echo $reduction > 0 ? '10% de réduction' : 'Aucune'; ?></td>
+                                <td><?php echo number_format($total, 2); ?>€</td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                
+                <div class="panier-total">
+                    <h2>Total du panier : 
+                        <?php 
+                        $totalPanier = array_sum(array_map(function($item) {
+                            $reduction = $item["reduction"] ?? 0;
+                            return ($item["price"] * (1 - $reduction)) * $item["quantite"];
+                        }, $_SESSION["panier"]));
+                        echo number_format($totalPanier, 2);
+                        ?>€
+                    </h2>
+                </div>
+
+                <div class="actions-panier">
+                    <form method="post" action="vider_panier.php">
+                        <button type="submit" class="btn-vider-panier">Vider le panier</button>
+                    </form>
+                    <button class="btn-commande">Passer la commande</button>
                 </div>
             </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>Votre panier est vide.</p>
-    <?php endif; ?>
-
-    <?php if (!empty($_SESSION["panier"])): ?>
-        <form method="post" action="vider_panier.php">
-            <button type="submit">Vider le panier</button>
-        </form>
-    <?php endif; ?>
+        <?php else: ?>
+            <p class="panier-vide">Votre panier est vide. Rendez-vous sur la page des produits pour ajouter des articles à votre panier.</p>
+        <?php endif; ?>
+    </div>
 </body>
 </html>

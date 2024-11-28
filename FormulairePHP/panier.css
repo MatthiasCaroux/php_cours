@@ -1,0 +1,106 @@
+/* Container de la page du panier */
+.container-panier {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.panier-details h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.table-panier {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table-panier th, .table-panier td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.table-panier th {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.img-panier {
+    width: 80px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.panier-total {
+    font-size: 24px;
+    text-align: right;
+    margin-top: 20px;
+    color: #D9534F;
+}
+
+.actions-panier {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.btn-vider-panier, .btn-commande {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-vider-panier {
+    background-color: #D9534F;
+    color: white;
+}
+
+.btn-vider-panier:hover {
+    background-color: #c9302c;
+}
+
+.btn-commande {
+    background-color: #007BFF;
+    color: white;
+}
+
+.btn-commande:hover {
+    background-color: #0056b3;
+}
+
+.panier-vide {
+    font-size: 18px;
+    color: #D9534F;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table-panier th, .table-panier td {
+        padding: 10px;
+    }
+
+    .img-panier {
+        width: 50px;
+    }
+
+    .btn-vider-panier, .btn-commande {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .actions-panier {
+        flex-direction: column;
+        align-items: center;
+    }
+}
