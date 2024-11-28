@@ -1,0 +1,163 @@
+/* Styles généraux */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+nav {
+    background: #007BFF;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+nav > ul {
+    display: flex;
+    text-decoration: none;
+    list-style-type: none;
+    justify-content: center;
+}
+
+nav > ul > li {
+    margin: 0 10px;
+}
+
+nav > ul > li > a {
+    text-decoration: none;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* Conteneur principal */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Formulaire */
+form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+form select,
+form input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+form select:focus,
+form input[type="submit"]:focus {
+    border-color: #007BFF;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+form input[type="submit"] {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Produits */
+.contenu {
+    display: flex;
+    
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.contenu:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Image des produits */
+.contenu img {
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 15px;
+    object-fit: cover; /* S'assure que l'image conserve un bon ratio */
+}
+
+/* Informations des produits */
+.contenu h2 {
+    margin: 0 0 10px;
+    font-size: 24px;
+    color: #007BFF;
+}
+
+.contenu p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    form input[type="submit"],
+    form select {
+        font-size: 14px;
+    }
+
+    .contenu {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contenu img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    .contenu h2 {
+        font-size: 20px;
+    }
+
+    .contenu p {
+        font-size: 14px;
+    }
+}
