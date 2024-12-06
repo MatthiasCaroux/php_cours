@@ -1,0 +1,16 @@
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form input {
+    margin-bottom: 10px;
+}
+
+form button {
+    margin-top: 10px;
+}
+
+form button:hover {
+    background-color: #f0f0f0;
+}
